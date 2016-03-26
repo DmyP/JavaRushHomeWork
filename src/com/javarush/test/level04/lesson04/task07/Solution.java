@@ -10,11 +10,23 @@ package com.javarush.test.level04.lesson04.task07;
 Годы 2100, 2200 и 2300 — невисокосные.
 */
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class Solution
 {
     public static void main(String[] args) throws Exception
     {
-        //напишите тут ваш код
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String s = reader.readLine();
+        int n = Integer.parseInt(s);
+        float f = n % 4;
+        float f2 = n % 100;
+        float f3 = n % 400;
+        if ((f == 0.0) && (f2 != 0.0)) n = 366;
+            else if ((f == 0.0) && (f2 == 0.0) && (f3 == 0.0)) n = 366;
+        else n = 365;
+        System.out.println("количество дней в году: " + n);
 
     }
 }
