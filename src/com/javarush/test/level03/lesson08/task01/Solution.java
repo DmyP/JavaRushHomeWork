@@ -15,8 +15,8 @@ public class Solution
     public static void main(String[] args) throws Exception
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String sAge = reader.readLine();
         String name = reader.readLine();
+        String sAge = reader.readLine();
         int age = Integer.parseInt(sAge);
         System.out.println(name + " захватит мир через " + age + " лет. Му-ха-ха!");
     }
