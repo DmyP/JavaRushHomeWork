@@ -38,13 +38,14 @@ public class Solution {
 
         @Override
         public String getPhoneNumber() {
-            String m = String.format("+%d(%2$s)%3$s-%4$s-%5$s",incomeData.getCountryPhoneCode(),
+            String string = String.format("+%d(%2$s)%3$s-%4$s-%5$s",incomeData.getCountryPhoneCode(),
                     String.format("%010d", incomeData.getPhoneNumber()).substring(0, 3),
                     String.format("%010d", incomeData.getPhoneNumber()).substring(3, 6),
                     String.format("%010d", incomeData.getPhoneNumber()).substring(6, 8),
                     String.format("%010d", incomeData.getPhoneNumber()).substring(8));
 
-            return m;
+            return string;
+
         }
 
         @Override
