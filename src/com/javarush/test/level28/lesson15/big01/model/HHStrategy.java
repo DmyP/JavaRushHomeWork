@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HHStrategy implements Strategy {
-    private static final String URL_FORMAT = "http://hh.ua/search/vacancy?text=java+%s&page=%d";
-    private static final String USERAGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36";
+    private static final String URLFORMAT = "http://hh.ua/search/vacancy?text=java+%s&page=%d";
+    private static final String USERAGENT = "Chrome/49.0.2623.87";
     private static final String REFERRER = "http://www.google.com.ua";
     private static final int TIMEOUT = 5 * 1000;
+
     @Override
     public List<Vacancy> getVacancies(String searchString) {
         List<Vacancy> list = new ArrayList<>();
@@ -44,7 +45,7 @@ public class HHStrategy implements Strategy {
     }
 
     protected  Document getDocument(String searchString, int page) throws IOException{
-        String url = String.format(URL_FORMAT, searchString, page);
+        String url = String.format(URLFORMAT, searchString, page);
         try {
             Document doc = Jsoup.connect(url).userAgent(USERAGENT).referrer(REFERRER).timeout(TIMEOUT).get();
             return doc;
