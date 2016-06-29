@@ -54,13 +54,13 @@ import java.util.List;
 */
 public class Solution extends AbstractList<String> implements List<String>, Cloneable, Serializable {
     public static void main(String[] args) {
-        List<String> list = new Solution();
-        for (int i = 1; i < 16; i++) {
-            list.add(String.valueOf(i));
-        }
-        System.out.println("Expected 3, actual is " + ((Solution) list).getParent("8"));
-        list.remove("5");
-        System.out.println("Expected null, actual is " + ((Solution) list).getParent("11"));
+//        List<String> list = new Solution();
+//        for (int i = 1; i < 16; i++) {
+//            list.add(String.valueOf(i));
+//        }
+//        System.out.println("Expected 3, actual is " + ((Solution) list).getParent("8"));
+//        list.remove("5");
+//        System.out.println("Expected null, actual is " + ((Solution) list).getParent("11"));
     }
 
     public String getParent(String value) {
