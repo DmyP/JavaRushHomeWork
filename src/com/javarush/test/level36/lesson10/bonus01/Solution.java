@@ -1,8 +1,14 @@
 package com.javarush.test.level36.lesson10.bonus01;
 
+
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +29,7 @@ public class Solution {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Solution solution = new Solution("data/second");
+        Solution solution = new Solution("/Users/inna/Documents/class2");
         solution.scanFileSystem();
         System.out.println(solution.getHiddenClassObjectByKey("hiddenclassimplse"));
         System.out.println(solution.getHiddenClassObjectByKey("hiddenclassimplf"));
@@ -31,46 +37,53 @@ public class Solution {
     }
 
     public void scanFileSystem() throws ClassNotFoundException {
-        String s = "src/" + this.getClass().getPackage().getName().replaceAll("[.]", "/") + "/" + packageName;
-        File[] files = new File(s).listFiles();
-        hiddenClasses.clear();
-        for (File file : files) {
-            myClassLoader classLoader = new myClassLoader(this.getClass().getClassLoader(), file);
+        File directory = new File(packageName);
+        String [] classFiles =  directory.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.contains(".class");
+            }
+        });
+        for (String str : classFiles){
+            final String pathToFile = directory.getAbsolutePath() + File.separator;
+            ClassLoader classLoader = new ClassLoader() {
+                @Override
+                protected Class<?> findClass(String name) throws ClassNotFoundException {
+                    String className = pathToFile + name + ".class";
+                    Path path = Paths.get(className);
+                    try {
+                        byte [] buffer = Files.readAllBytes(path);
+                        return defineClass(null, buffer, 0, buffer.length);
+                    } catch (IOException e) {
+                        return super.findClass(name);
+                    }
+                }
+            };
+            String subName = str.substring(0,str.lastIndexOf("."));
+            Class clazz = classLoader.loadClass(subName);
+            if(HiddenClass.class.isAssignableFrom(clazz)){
+                hiddenClasses.add(clazz);
+            }
         }
     }
 
     public HiddenClass getHiddenClassObjectByKey(String key) {
-        for (Class<?> clazz : hiddenClasses) {
-            if (clazz.getSimpleName().toLowerCase().startsWith(key.toLowerCase())) {
+        for(Class clazz: hiddenClasses){
+            if(clazz.getSimpleName().toLowerCase().startsWith(key.toLowerCase())){
                 try {
-                    Constructor constructor = clazz.getDeclaredConstructor();
-                    constructor.setAccessible(true);
-                    return (HiddenClass) constructor.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Constructor[] constructors = clazz.getDeclaredConstructors();
+                    for(Constructor constructor: constructors){
+                        if(constructor.getParameterTypes().length == 0){
+                            constructor.setAccessible(true);
+                            return (HiddenClass) constructor.newInstance(null);
+                        }
+                    }
                 }
-                break;
+                catch (InstantiationException e) {}
+                catch (IllegalAccessException e) {}
+                catch (InvocationTargetException e) {}
             }
         }
         return null;
-    }
-
-    private class myClassLoader extends ClassLoader {
-        private File file;
-
-        public myClassLoader(ClassLoader parent, File file) {
-            super(parent);
-            this.file = file;
-        }
-
-        @Override
-        protected Class<?> findClass(String name) throws ClassNotFoundException {
-            try {
-                byte[] buf = Files.readAllBytes(file.toPath());
-                return defineClass(name, buf, 0, buf.length);
-            } catch (Exception e) {
-                return super.findClass(name);
-            }
-        }
     }
 }

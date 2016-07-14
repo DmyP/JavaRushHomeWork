@@ -41,7 +41,7 @@ public class Solution {
         try {
             for (String cls : clazzes) {
                 try {
-                    String finalPathToAnimals = pathToAnimals;
+                    final String finalPathToAnimals = pathToAnimals;
                     ClassLoader loader = new ClassLoader() {
                         @Override
                         public Class<?> findClass(String className) throws ClassNotFoundException {
